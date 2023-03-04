@@ -91,9 +91,10 @@ elif [ change-all = "$1" -a -n $2 ]; then
   done
   echo "Se cambiaron los permisos de todas las referencias"
 elif [ change = "$1" -a -n "$2" -a -n "$3" ]; then
-  REF=$(grep $3 ~/.refs/referencias.txt | cut -d " " -f 1)
+  R=$(realpath $3)
+  REF=$(grep $R ~/.refs/referencias.txt | cut -d " " -f 1)
   if [ -e ~/.refs/$REF ]; then
-    chmod $2 ~/.refs/$REF && echo "Se cambio el permiso de $3"
+    chmod $R ~/.refs/$REF && echo "Se cambio el permiso de $3"
   else
     echo "Esta rferencia no exite"
   fi
