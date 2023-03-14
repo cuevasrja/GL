@@ -71,9 +71,10 @@ elif [ delete = "$1" -a -n "$2" ]; then
   P=$(grep -e "$R$" ~/.refs/referencias.txt)
   echo $P > ~/.refs/temp
   REF=$(cut -d " " -f 1 ~/.refs/temp)
+  NUM=$(grep -n "$P" ~/.refs/referencias.txt | cut -d ":" -f 1)
   if $(grep -qe  "$R$" ~/.refs/referencias.txt); then
-    if [ -e "~/.refs/$REF" ]; then
-      unlink "~/.refs/$REF" && echo "Se eliminó la referencia a $2" && sed -i "${NUM}d" ~/.refs/referencias.txt
+    if [ -e "$R" ]; then
+      unlink ~/.refs/$REF && echo "Se eliminó la referencia a $2" && sed -i "${NUM}d" ~/.refs/referencias.txt
     else
       sed -i "${NUM}d" ~/.refs/referencias.txt && echo "Advertencia: La referencia de $2 no existe, por lo que va a ser eliminada de la lista"
     fi
