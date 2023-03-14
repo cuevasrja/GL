@@ -71,9 +71,10 @@ elif [ delete = "$1" -a -n "$2" ]; then
   P=$(grep -e "$R$" ~/.refs/referencias.txt)
   echo $P > ~/.refs/temp
   REF=$(cut -d " " -f 1 ~/.refs/temp)
+  NUM=$(grep -n "$P" ~/.refs/referencias.txt | cut -d ":" -f 1)
   if $(grep -qe  "$R$" ~/.refs/referencias.txt); then
-    if [ -e "~/.refs/$REF" ]; then
-      unlink "~/.refs/$REF" && echo "Se eliminó la referencia a $2" && sed -i "${NUM}d" ~/.refs/referencias.txt
+    if [ -e "$R" ]; then
+      unlink ~/.refs/$REF && echo "Se eliminó la referencia a $2" && sed -i "${NUM}d" ~/.refs/referencias.txt
     else
       sed -i "${NUM}d" ~/.refs/referencias.txt && echo "Advertencia: La referencia de $2 no existe, por lo que va a ser eliminada de la lista"
     fi
@@ -91,9 +92,10 @@ elif [ change-all = "$1" -a -n $2 ]; then
   done
   echo "Se cambiaron los permisos de todas las referencias"
 elif [ change = "$1" -a -n "$2" -a -n "$3" ]; then
-  REF=$(grep $3 ~/.refs/referencias.txt | cut -d " " -f 1)
+  R=$(realpath $3)
+  REF=$(grep $R ~/.refs/referencias.txt | cut -d " " -f 1)
   if [ -e ~/.refs/$REF ]; then
-    chmod $2 ~/.refs/$REF && echo "Se cambio el permiso de $3"
+    chmod $R ~/.refs/$REF && echo "Se cambio el permiso de $3"
   else
     echo "Esta rferencia no exite"
   fi
