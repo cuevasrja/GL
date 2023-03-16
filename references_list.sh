@@ -16,8 +16,8 @@ else
 fi
 
 if [ $# -eq 0 ]; then
-  echo -e "Comando invalido: Por favor escriba correctamente.\nEn caso de necesitar ayuda escriba: references_list help"
-elif [ "$1" == help ]; then
+  echo -e "Comando invalido: Por favor escriba correctamente.\nEn caso de necesitar ayuda escriba: references_list help o references_list -h"
+elif [ "$1" == help ] || [ "$1" == "-h" ]; then
   echo "Este script lee la lista de referencias
     [add]         Agrega una nueva referencia. Ej: references_list add [Referencia]
     [delete]      Elimina una referencia. Ej: references_list delete [Referencia]
@@ -25,7 +25,7 @@ elif [ "$1" == help ]; then
     [show]        Muestra todas las referencias almacenadas en referencias.txt. Ej: references_list show
     [change]      Cambia el permiso de una referencia. Ej: references_list change [Mod] [Referencia]
     [change-all]  Cambia el permiso de todas las referencias registradas. references_list change-all [Mod]
-    [help]        Muestra los comandos del script. Ej: references_list help"
+    [help/-h]        Muestra los comandos del script. Ej: references_list help o references_list -h"
 elif [ "$1" == show ]; then
   echo -e "REFERENCIAS
 Las refrencias existentes van a parecer \033[34masi\033[0m y las que no existen \033[41masi\033[0m"
@@ -84,22 +84,14 @@ elif [ delete = "$1" -a -n "$2" ]; then
   rm -f ~/.refs/temp
 elif [ change-all = "$1" -a -n $2 ]; then
   for line in $(ls ~/.refs/ | grep -Ee "[a-z0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}"); do
-    if [ -e ~/.refs/$line ]; then
-      chmod $2 ~/.refs/$line
-    else
-      echo "Esta referencia no exite"
-    fi
+    chmod $2 ~/.refs/$line
   done
   echo "Se cambiaron los permisos de todas las referencias"
 elif [ change = "$1" -a -n "$2" -a -n "$3" ]; then
   R=$(realpath $3)
   REF=$(grep $R ~/.refs/referencias.txt | cut -d " " -f 1)
-  if [ -e ~/.refs/$REF ]; then
-    chmod $R ~/.refs/$REF && echo "Se cambio el permiso de $3"
-  else
-    echo "Esta rferencia no exite"
-  fi
+  chmod $R ~/.refs/$REF && echo "Se cambio el permiso de $3"
 else
   echo "Comando invalido: Por favor escriba correctamente. 
-En caso de necesitar ayuda, escriba: references_list help"
+En caso de necesitar ayuda, escriba: references_list help o references_list -h"
 fi
