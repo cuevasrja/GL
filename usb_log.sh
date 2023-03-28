@@ -10,11 +10,9 @@ if [ -f ~/.temp ]; then
   rm -f ~/.temp
 fi
 
-# TODO: Revisar metodo start porque tiene fallos
-
 if [ $# -eq 0 ]; then
-  echo -e "Comando invalido: Por favor escriba correctamente.\nEn caso de necesitar ayuda escriba: usb_log help o usb_log -h"
-elif [ $1 = "start" ]; then
+  echo -e "Comando invalido: Por favor escriba correctamente.\nEn caso de necesitar ayuda escriba: usb_log --help o usb_log -h"
+elif [ "$1" = "--run" -o "$1" = "-r" ]; then
   while [ true ]; do
     if [ $(wc -l ~/.log_usb.txt | cut -d " " -f 1) -eq 0 ]; then
         lsusb | while read line; do
@@ -22,6 +20,7 @@ elif [ $1 = "start" ]; then
             ID=$(cut -d " " -f 6 ~/.log_usb.temp)
             DATE=$(date +'%d/%m/%Y %H:%M:%S')
             echo "$ID | $DATE | Conectado" >> ~/.log_usb.txt
+            echo -e "\nSe conecto $ID"
         done
     elif [ $(($(wc -l ~/.log_usb.txt | cut -d " " -f 1))) -lt $(($(lsusb | wc -l))) ]; then
         lsusb | while read line; do
@@ -32,6 +31,7 @@ elif [ $1 = "start" ]; then
             else
                 DATE=$(date +'%d/%m/%Y %H:%M:%S')
                 echo "$ID | $DATE | Conectado" >> ~/.log_usb.txt
+                echo -e "\nSe conecto $ID"
             fi
         done
     else
@@ -45,6 +45,7 @@ elif [ $1 = "start" ]; then
                     LINE=$(grep -n "$ID" ~/.log_usb.txt | cut -d ":" -f 1)
                     sed -i "${LINE}d" ~/.log_usb.txt
                     echo "$ID | $DATE | Conectado" >> ~/.log_usb.txt
+                    echo -e "\nSe conecto $ID"
                 fi
             else
                 if [ "$ESTADO" = "Conectado" ]; then
@@ -52,34 +53,37 @@ elif [ $1 = "start" ]; then
                     LINE=$(grep -n "$ID" ~/.log_usb.txt | cut -d ":" -f 1)
                     sed -i "${LINE}d" ~/.log_usb.txt
                     echo "$ID | $DATE | Desconectado" >> ~/.log_usb.txt
+                    echo -e "\nSe desconecto $ID"
                 fi
             fi
         done
     fi
   done
   rm -f ~/.log_usb.temp
-elif [ "$1" = "stop" ]; then
+elif [ "$1" = "--kill" -o "$1" = "-k" ]; then
     ps | grep -e "usb_log.sh" > ~/.temp
-    ID=$(cut -d " " -f 2 ~/.temp)
-    echo "Se detuvo el proceso de log de puertos USB"
-    kill $ID
+    ID=$(grep -v "$$" ~/.temp | cut -d " " -f 1)
+    kill $ID && echo "Se detuvo el proceso de log de puertos USB"
     exit
-elif [ "$1" = "show" ]; then    
+elif [ "$1" = "--show" -o "$1" = "-s" ]; then
     echo "############################################################################################"
     echo -e "\033[33m    ID    | FECHA/HORA CONEXION | ESTADO\033[0m"
     cat ~/.log_usb.txt
     LINES=$(wc -l ~/.log_usb.txt | cut -d " " -f 1)
     echo -e "\n\033[33mTotal de registros: $LINES\033[0m"
     echo -e "\033[33mUltima actualizacion: $(date +'%d/%m/%Y %H:%M:%S')\033[0m"
-elif [ "$1" = "reset" ]; then
-    rm -f ~/.log_usb.txt && touch ~/.log_usb.txt && echo "Se reinicio el log de puertos USB"
-elif [ "$1" = "help" -o "$1" = "-h" ]; then
+    echo "El listado de puertos se encuentra en ~/.log_usb.txt"
+elif [ "$1" = "--delete" -o "$1" = "-d" ]; then
+    rm -f ~/.log_usb.txt && echo "Se reinicio el log de puertos USB"
+elif [ "$1" = "--help" -o "$1" = "-h" ]; then
     echo "Este script registra los puertos USB que se conectan y desconectan
-    [start]         Inicia el proceso de log. Ej: usb_log start
-    [stop]          Detiene el proceso de log. Ej: usb_log stop
-    [show]          Muestra el log de puertos USB. Ej: usb_log show
-    [reset]         Reinicia el log de puertos USB. Ej: usb_log reset
-    [help/-h]       Muestra los comandos del script. Ej: usb_log help o usb_log -h"
+    [--run/-r]        Inicia el proceso de log. Ej: usb_log -r
+    [--kill/-k]       Detiene el proceso de log. Ej: usb_log -k
+    [--show/-s]       Muestra el log de puertos USB. Ej: usb_log -s
+    [--delete/-d]     Reinicia el log de puertos USB. Ej: usb_log -d
+    [--help/-h]       Muestra los comandos del script. Ej: usb_log help o usb_log -h
+
+    El listado de puertos se encuentra en ~/.log_usb.txt"
     exit
 else
     echo -e "Comando invalido: Por favor escriba correctamente. \nEn caso de necesitar ayuda escriba: usb_log help o usb_log -h"
