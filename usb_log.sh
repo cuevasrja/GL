@@ -62,8 +62,13 @@ elif [ "$1" = "--run" -o "$1" = "-r" ]; then
   rm -f ~/.log_usb.temp
 elif [ "$1" = "--kill" -o "$1" = "-k" ]; then
     ps | grep -e "usb_log.sh" > ~/.temp
-    ID=$(grep -v "$$" ~/.temp | cut -d " " -f 1)
-    kill $ID && echo "Se detuvo el proceso de log de puertos USB"
+    if [ $(wc -l ~/.temp | cut -d " " -f 1) -eq 0 ]; then
+      echo "No hay procesos ejecutandose en segundo plano"
+    else
+      ID=$(head -n 1 ~/.temp | grep -v $$ | cut -d " " -f 2)
+      kill $ID && echo "Se detuvo el proceso de log de puertos USB"
+    fi
+    rm ~/.temp
     exit
 elif [ "$1" = "--show" -o "$1" = "-s" ]; then
     echo "############################################################################################"
@@ -74,7 +79,13 @@ elif [ "$1" = "--show" -o "$1" = "-s" ]; then
     echo -e "\033[33mUltima actualizacion: $(date +'%d/%m/%Y %H:%M:%S')\033[0m"
     echo "El listado de puertos se encuentra en ~/.log_usb.txt"
 elif [ "$1" = "--delete" -o "$1" = "-d" ]; then
-    rm -f ~/.log_usb.txt && echo "Se reinicio el log de puertos USB"
+    ps | grep -e "usb_log.sh" > ~/.temp
+    if $(grep -qv "$$" ~/.temp); then
+      echo "Advertencia: Hay que detener el proceso primero"
+    else
+      rm -f ~/.log_usb.txt && echo "Se reinicio el log de puertos USB"
+    fi
+    rm ~/.temp
 elif [ "$1" = "--help" -o "$1" = "-h" ]; then
     echo "Este script registra los puertos USB que se conectan y desconectan
     [--run/-r]        Inicia el proceso de log. Ej: usb_log -r
