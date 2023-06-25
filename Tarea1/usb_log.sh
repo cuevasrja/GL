@@ -2,8 +2,8 @@
 
 # Se usa este script mediante una regla de udev que se encuentra en /etc/udev/rules.d/usb-change.rules
 # La regla es la siguiente:
-# ACTION=="add", SUBSYSTEM=="usb", RUN+="/home/cuevasrja/usb_log.sh --run"
-# ACTION=="remove", SUBSYSTEM=="usb", RUN+="/home/cuevasrja/usb_log.sh --run"
+# ACTION=="add", SUBSYSTEM=="usb", RUN+="/home/cuevasrja/usb_log.sh"
+# ACTION=="remove", SUBSYSTEM=="usb", RUN+="/home/cuevasrja/usb_log.sh"
 
 FILE="/home/cuevasrja/.log_usb.txt"
 TEMP="/home/cuevasrja/.log_usb.temp"
