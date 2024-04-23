@@ -38,6 +38,16 @@ Para listar todos los directorios o archivos que estan en el PATH, se ejecuta el
 
 Este script administra los paquetes de una sala de computadoras. El script permite instalar y desinstalar paquetes en las computadoras de la sala. Ademas, tambien permite listar los paquetes instalados en las computadoras de la sala.
 
+> [!WARNING] Advertencia:
+> Para poder ejecutar el script, se debe tener configurado el acceso por ssh a las computadoras de la sala. Ademas, se debe tener configurado el acceso por ssh sin contraseña, es decir, se debe tener configurado el acceso por ssh con llaves publicas y privadas. 
+> 
+> En caso de no tener configurado el acceso por ssh sin contraseña, lea el script para configurar el acceso por ssh sin contraseña. Además, puede usar como referencia el siguiente enlace: [https://www.ssh.com/ssh/copy-id](https://www.ssh.com/ssh/copy-id)
+
+> [!NOTE] Consideraciones:
+> Se asume que las computadoras de la sala estan conectadas a la misma red y se pueden acceder por ssh.
+> 
+> Suponemos que todas las computadoras de la sala tienen el mismo usuario y contraseña.
+
 #### Uso
 
 ```bash
