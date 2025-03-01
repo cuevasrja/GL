@@ -4,8 +4,8 @@ Repository for the Linux Scripts group, where we will share scripts that we have
 
 ## Tarea 1
 
-[Tarea 1 Readme file](Tarea1/README.md)
+[Tarea 1 Readme file](./Tarea1/README.md)
 
 ## Tarea 2
 
-[Tarea 2 Readme file](Tarea2/README.md)
+[Tarea 2 Readme file](./Tarea2/README.md)
